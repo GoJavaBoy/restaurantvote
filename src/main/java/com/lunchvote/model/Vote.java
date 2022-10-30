@@ -8,6 +8,20 @@ public class Vote extends AbstractBaseEntity {
     private User user;
     private LocalDate created;
 
+    public Vote() {
+    }
+
+    public Vote(Restaurant restaurant, User user, LocalDate created) {
+        this(null, restaurant, user, created);
+    }
+
+    public Vote(Integer id, Restaurant restaurant, User user, LocalDate created) {
+        super(id);
+        this.restaurant = restaurant;
+        this.user = user;
+        this.created = created;
+    }
+
     public Restaurant getRestaurant() {
         return restaurant;
     }
@@ -24,12 +38,12 @@ public class Vote extends AbstractBaseEntity {
         this.user = user;
     }
 
-    public LocalDate getDateTime() {
+    public LocalDate getCreated() {
         return created;
     }
 
-    public void setDateTime(LocalDate date) {
-        this.created = date;
+    public void setCreated(LocalDate created) {
+        this.created = created;
     }
 
     @Override
