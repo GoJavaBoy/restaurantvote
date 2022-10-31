@@ -1,11 +1,26 @@
 package com.lunchvote.model;
 
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public class Vote extends AbstractBaseEntity {
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurant_id")
+    @NotNull
     private Restaurant restaurant;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @NotNull
     private User user;
+
+    @Column(name = "created", columnDefinition = "date", nullable = false)
+    @NotNull
     private LocalDate created;
 
     public Vote() {
