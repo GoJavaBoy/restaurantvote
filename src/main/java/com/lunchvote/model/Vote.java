@@ -1,13 +1,25 @@
 package com.lunchvote.model;
 
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "vote")
+@NamedQueries({
+        @NamedQuery(name = Vote.DELETE, query = "DELETE FROM Vote v WHERE v.id=:id"),
+        @NamedQuery(name = Vote.BY_USER, query = "SELECT v FROM Vote v WHERE v.user.id=:userId ORDER BY v.created DESC"),
+        @NamedQuery(name = Vote.BY_USER_AND_DATE, query = "SELECT v FROM Vote v WHERE v.user.id=:userId AND v.created=:created"),
+        @NamedQuery(name = Vote.BY_RESTAURANT, query = "SELECT v FROM Vote v WHERE v.restaurant.id=:restaurantId ORDER BY v.created DESC"),
+        @NamedQuery(name = Vote.BY_RESTAURANT_AND_DATE, query = "SELECT v FROM Vote v WHERE v.restaurant.id=:restaurantId AND v.created=:created ORDER BY v.created DESC"),
+})
 public class Vote extends AbstractBaseEntity {
+
+    public static final String DELETE = "Vote.delete";
+    public static final String BY_USER_AND_DATE = "Vote.byUserAndDate";
+    public static final String BY_USER = "Vote.byUser";
+    public static final String BY_RESTAURANT = "Vote.byRestaurant";
+    public static final String BY_RESTAURANT_AND_DATE = "Vote.byRestaurantAndDate";
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
