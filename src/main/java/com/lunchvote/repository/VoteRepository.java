@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Repository
@@ -20,17 +21,21 @@ public class VoteRepository {
     private EntityManager em;
 
     @Transactional
-    public Vote save(Vote vote) {
-        User userRef = em.getReference(User.class, userId);
+    public Vote save(int restaurantId, int userId) {
+        Vote todayVote = getByUserAndDate(userId, LocalDate.now());
         Restaurant restaurantRef = em.getReference(Restaurant.class, restaurantId);
-        LocalDate currentDate = LocalDate.now();
-        vote.setCreated(currentDate);
-        if (vote.isNew()){
-            vote.setUser(userRef);
+
+        if (todayVote != null) {
+            if (LocalTime.now().isBefore(LocalTime.of(11, 0))) {
+                todayVote.setRestaurant(restaurantRef);
+                return em.merge(todayVote);
+            }
+            return todayVote;
+        } else {
+            User userRef = em.getReference(User.class, userId);
+            Vote vote = new Vote(restaurantRef, userRef);
             em.persist(vote);
             return vote;
-        } else {
-            return em.merge(vote);
         }
     }
 
