@@ -19,7 +19,7 @@ public class UserTestData {
     public static final int NOT_FOUND = 10;
 
     public static final User user = new User(USER_ID, "User", "user@gmail.com", "password", Role.USER);
-    public static final User user2 = new User(USER2_ID, "User2", "user2@ygmail.com", "password", Role.USER);
+    public static final User user2 = new User(USER2_ID, "User2", "user2@gmail.com", "password", Role.USER);
     public static final User user3 = new User(USER3_ID, "User3", "user3@gmail.com", "password", Role.USER);
     public static final User admin = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", Role.ADMIN);
     public static final User guest = new User(GUEST_ID, "Guest", "guest@gmail.com", "guest");
