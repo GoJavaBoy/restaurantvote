@@ -2,7 +2,6 @@ package com.lunchvote.service;
 
 import com.lunchvote.model.Restaurant;
 import com.lunchvote.repository.RestaurantRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
