@@ -5,26 +5,15 @@ import com.lunchvote.model.Role;
 import com.lunchvote.model.User;
 import com.lunchvote.util.exception.NotFoundException;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.SqlConfig;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
 import static com.lunchvote.UserTestData.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThrows;
 
-@ContextConfiguration({
-        "classpath:spring/spring-app.xml",
-        "classpath:spring/spring-db.xml"
-})
-@RunWith(SpringRunner.class)
-@Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-public class UserServiceTest {
+public class UserServiceTest extends AbstractServiceTest {
 
     @Autowired
     private UserService service;

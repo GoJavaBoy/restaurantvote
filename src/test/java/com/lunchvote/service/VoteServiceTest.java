@@ -5,12 +5,8 @@ import com.lunchvote.model.Vote;
 import com.lunchvote.util.exception.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.SqlConfig;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,14 +20,8 @@ import static com.lunchvote.VoteTestUtil.isEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
-@ContextConfiguration({
-        "classpath:spring/spring-app.xml",
-        "classpath:spring/spring-db.xml",
-        "classpath:spring/spring-mockTime.xml"
-})
-@RunWith(SpringRunner.class)
-@Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-public class VoteServiceTest {
+@ContextConfiguration("classpath:spring/spring-mockTime.xml")
+public class VoteServiceTest extends AbstractServiceTest {
 
     @Autowired
     private VoteService service;
