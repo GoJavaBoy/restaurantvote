@@ -3,12 +3,14 @@ package com.lunchvote.repository;
 import com.lunchvote.model.Restaurant;
 import com.lunchvote.model.User;
 import com.lunchvote.model.Vote;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -20,13 +22,16 @@ public class VoteRepository {
     @PersistenceContext
     private EntityManager em;
 
+    @Autowired
+    private Clock clock;
+
     @Transactional
     public Vote save(int restaurantId, int userId) {
         Vote todayVote = getByUserAndDate(userId, LocalDate.now());
         Restaurant restaurantRef = em.getReference(Restaurant.class, restaurantId);
 
         if (todayVote != null) {
-            if (LocalTime.now().isBefore(LocalTime.of(11, 0))) {
+            if (LocalTime.now(clock).isBefore(LocalTime.of(11, 0))) {
                 todayVote.setRestaurant(restaurantRef);
                 return em.merge(todayVote);
             }
