@@ -9,7 +9,6 @@ import static com.lunchvote.UserTestData.*;
 import static com.lunchvote.model.AbstractBaseEntity.START_SEQ;
 
 public class VoteTestData {
-    public static final MatcherFactory.Matcher<Vote> VOTE_MATCHER = MatcherFactory.usingIgnoringFieldsComparator("restaurant", "user");
 
     public static final Vote adminVote = new Vote(START_SEQ + 28, mcDonaldRest, admin, LocalDate.of(2022, 11, 1));
     public static final Vote user3Vote = new Vote(START_SEQ + 27, kfcRest, user3, LocalDate.of(2022, 11, 1));

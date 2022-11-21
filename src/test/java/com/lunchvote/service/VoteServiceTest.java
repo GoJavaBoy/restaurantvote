@@ -1,6 +1,8 @@
 package com.lunchvote.service;
 
 import com.lunchvote.MockClock;
+import com.lunchvote.TestUtil;
+import com.lunchvote.VoteTestUtil;
 import com.lunchvote.model.Vote;
 import com.lunchvote.util.exception.NotFoundException;
 import org.junit.Before;
@@ -86,7 +88,7 @@ public class VoteServiceTest extends AbstractServiceTest {
     @Test
     public void getByUser() {
         List<Vote> votes = service.getByUser(user.getId());
-        isEqual(votes, List.of(userVote3, userVote2, userVote));
+        TestUtil.isEqual(votes, List.of(userVote3, userVote2, userVote), VoteTestUtil::isEqual);
     }
 
     @Test
@@ -98,12 +100,12 @@ public class VoteServiceTest extends AbstractServiceTest {
     @Test
     public void getByRestaurant() {
         List<Vote> votes = service.getByRestaurant(kfcRest.getId());
-        isEqual(votes, List.of(userVote, user2Vote, user3Vote));
+        TestUtil.isEqual(votes, List.of(userVote, user2Vote, user3Vote), VoteTestUtil::isEqual);
     }
 
     @Test
     public void getByRestaurantAndDate() {
         List<Vote> votes = service.getByRestaurantAndDate(kfcRest.getId(), LocalDate.of(2022, 11, 1));
-        isEqual(votes, List.of(userVote, user2Vote, user3Vote));
+        TestUtil.isEqual(votes, List.of(userVote, user2Vote, user3Vote), VoteTestUtil::isEqual);
     }
 }

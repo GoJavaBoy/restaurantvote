@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @NamedQueries({
         @NamedQuery(name = MenuItem.DELETE, query = "DELETE FROM MenuItem m WHERE m.id=:id"),
         @NamedQuery(name = MenuItem.BY_RESTAURANT, query = "SELECT m FROM MenuItem m WHERE m.restaurant.id=:restaurantId ORDER BY m.created DESC"),
-        @NamedQuery(name = MenuItem.BY_RESTAURANT_AND_DATE, query = "SELECT m FROM MenuItem m WHERE m.restaurant.id=:restaurantId AND m.created=:date ORDER BY m.created DESC")
+        @NamedQuery(name = MenuItem.BY_RESTAURANT_AND_DATE, query = "SELECT m FROM MenuItem m WHERE m.restaurant.id=:restaurantId AND m.created=:created ORDER BY m.created DESC")
 })
 public class MenuItem extends AbstractNamedEntity {
 
@@ -32,8 +32,12 @@ public class MenuItem extends AbstractNamedEntity {
     public MenuItem() {
     }
 
-    public MenuItem(String name, Restaurant restaurant, int price, LocalDate created) {
-        this(null, name, restaurant, price, created);
+    public MenuItem(MenuItem menuItem) {
+        this(menuItem.id, menuItem.name, menuItem.restaurant, menuItem.price, menuItem.created);
+    }
+
+    public MenuItem(String name, Restaurant restaurant, int price) {
+        this(null, name, restaurant, price, LocalDate.now());
     }
 
     public MenuItem(Integer id, String name, Restaurant restaurant, int price, LocalDate created) {
