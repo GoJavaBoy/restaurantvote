@@ -1,43 +1,35 @@
 package com.lunchvote.repository;
 
 import com.lunchvote.model.Restaurant;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
-@Transactional(readOnly = true)
 public class RestaurantRepository {
 
-    @PersistenceContext
-    private EntityManager em;
+    private static final Sort SORT_NAME = Sort.by(Sort.Direction.ASC, "name");
 
-    @Transactional
-    public Restaurant save(Restaurant restaurant) {
-        if (restaurant.isNew()) {
-            em.persist(restaurant);
-            return restaurant;
-        } else {
-            return em.merge(restaurant);
-        }
+    private final CrudRestaurantRepository repository;
+
+    public RestaurantRepository(CrudRestaurantRepository repository) {
+        this.repository = repository;
     }
 
-    @Transactional
+    public Restaurant save(Restaurant restaurant) {
+       return repository.save(restaurant);
+    }
+
     public boolean delete(int id) {
-        return em.createNamedQuery(Restaurant.DELETE)
-                .setParameter("id", id)
-                .executeUpdate() != 0;
+        return repository.delete(id) != 0;
     }
 
     public Restaurant get(int id) {
-        return em.find(Restaurant.class, id);
+        return repository.findById(id).orElse(null);
     }
 
     public List<Restaurant> getAll() {
-        return em.createNamedQuery(Restaurant.ALL_SORTED, Restaurant.class)
-                .getResultList();
+        return repository.findAll(SORT_NAME);
     }
 }

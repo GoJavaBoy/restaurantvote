@@ -88,7 +88,7 @@ public class VoteServiceTest extends AbstractServiceTest {
     @Test
     public void getByUser() {
         List<Vote> votes = service.getByUser(user.getId());
-        TestUtil.isEqual(votes, List.of(userVote3, userVote2, userVote), VoteTestUtil::isEqual);
+        TestUtil.isEqual(votes, List.of(userVote, userVote2, userVote3), VoteTestUtil::isEqual);
     }
 
     @Test

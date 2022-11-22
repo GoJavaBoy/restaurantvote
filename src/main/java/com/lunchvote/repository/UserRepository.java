@@ -1,51 +1,39 @@
 package com.lunchvote.repository;
 
 import com.lunchvote.model.User;
-import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
-@Transactional(readOnly = true)
 public class UserRepository {
 
-    @PersistenceContext
-    private EntityManager em;
+    private static final Sort SORT_NAME_EMAIL = Sort.by(Sort.Direction.ASC, "name", "email");
 
-    @Transactional
+    private final CrudUserRepository crudRepository;
+
+    public UserRepository(CrudUserRepository crudRepository) {
+        this.crudRepository = crudRepository;
+    }
+
     public User save(User user) {
-        if (user.isNew()) {
-            em.persist(user);
-            return user;
-        } else {
-            return em.merge(user);
-        }
+        return crudRepository.save(user);
+    }
+
+    public boolean delete(int id) {
+        return crudRepository.delete(id) != 0;
     }
 
     public User get(int id) {
-        return em.find(User.class, id);
-    }
-
-    @Transactional
-    public boolean delete(int id) {
-        return em.createNamedQuery(User.DELETE)
-                .setParameter("id", id)
-                .executeUpdate() != 0;
+        return crudRepository.findById(id).orElse(null);
     }
 
     public User getByEmail(String email) {
-        List<User> users = em.createNamedQuery(User.BY_EMAIL, User.class)
-                .setParameter(1, email)
-                .getResultList();
-        return DataAccessUtils.singleResult(users);
+        return crudRepository.getByEmail(email);
     }
 
     public List<User> getAll() {
-        return em.createNamedQuery(User.ALL_SORTED, User.class)
-                .getResultList();
+        return crudRepository.findAll(SORT_NAME_EMAIL);
     }
 }

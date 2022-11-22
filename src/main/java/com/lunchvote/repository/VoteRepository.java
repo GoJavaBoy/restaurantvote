@@ -3,82 +3,73 @@ package com.lunchvote.repository;
 import com.lunchvote.model.Restaurant;
 import com.lunchvote.model.User;
 import com.lunchvote.model.Vote;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
 @Repository
-@Transactional(readOnly = true)
 public class VoteRepository {
+    private static final Sort SORT_CREATED = Sort.by(Sort.Direction.ASC, "created");
 
-    @PersistenceContext
-    private EntityManager em;
+    private final Clock clock;
 
-    @Autowired
-    private Clock clock;
+    private final CrudVoteRepository voteRepository;
+    private final CrudUserRepository userRepository;
+    private final CrudRestaurantRepository restaurantRepository;
 
-    @Transactional
+    public VoteRepository(CrudVoteRepository voteRepository, CrudUserRepository userRepository, CrudRestaurantRepository restaurantRepository, Clock clock) {
+        this.voteRepository = voteRepository;
+        this.userRepository = userRepository;
+        this.restaurantRepository = restaurantRepository;
+        this.clock = clock;
+    }
+
     public Vote save(int restaurantId, int userId) {
         Vote todayVote = getByUserAndDate(userId, LocalDate.now());
-        Restaurant restaurantRef = em.getReference(Restaurant.class, restaurantId);
-
+        Restaurant restaurantRef = restaurantRepository.getReferenceById(restaurantId);
         if (todayVote != null) {
             if (LocalTime.now(clock).isBefore(LocalTime.of(11, 0))) {
                 todayVote.setRestaurant(restaurantRef);
-                return em.merge(todayVote);
+                return voteRepository.save(todayVote);
             }
             return todayVote;
         } else {
-            User userRef = em.getReference(User.class, userId);
+            User userRef = userRepository.getReferenceById(userId);
             Vote vote = new Vote(restaurantRef, userRef);
-            em.persist(vote);
-            return vote;
+            return voteRepository.save(vote);
         }
     }
 
-    @Transactional
     public boolean delete(int id) {
-        return em.createNamedQuery(Vote.DELETE)
-                .setParameter("id", id)
-                .executeUpdate() != 0;
+        return voteRepository.delete(id) != 0;
     }
 
     public Vote get(int id) {
-        return em.find(Vote.class, id);
+        return voteRepository.findById(id).orElse(null);
     }
 
     public List<Vote> getByUser(int userId) {
-        return em.createNamedQuery(Vote.BY_USER, Vote.class)
-                .setParameter("userId", userId)
-                .getResultList();
+        return voteRepository.findAllByUserId(userId, SORT_CREATED);
     }
 
     public Vote getByUserAndDate(int userId, LocalDate date) {
-        List<Vote> votes = em.createNamedQuery(Vote.BY_USER_AND_DATE, Vote.class)
-                .setParameter("userId", userId)
-                .setParameter("created", date)
-                .getResultList();
-        return DataAccessUtils.singleResult(votes);
+//        List<Vote> votes = em.createNamedQuery(Vote.BY_USER_AND_DATE, Vote.class)
+//                .setParameter("userId", userId)
+//                .setParameter("created", date)
+//                .getResultList();
+//        return DataAccessUtils.singleResult(votes);
+        return voteRepository.getByUserIdAndCreated(userId, date).orElse(null);
     }
 
     public List<Vote> getByRestaurant(int restaurantId) {
-        return em.createNamedQuery(Vote.BY_RESTAURANT, Vote.class)
-                .setParameter("restaurantId", restaurantId)
-                .getResultList();
+        return voteRepository.getByRestaurantId(restaurantId, SORT_CREATED);
     }
 
     public List<Vote> getByRestaurantAndDate(int restaurantId, LocalDate date) {
-        return em.createNamedQuery(Vote.BY_RESTAURANT_AND_DATE, Vote.class)
-                .setParameter("restaurantId", restaurantId)
-                .setParameter("created", date)
-                .getResultList();
+        return voteRepository.getByRestaurantIdAndCreated(restaurantId, date, SORT_CREATED);
     }
 }

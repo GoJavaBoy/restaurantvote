@@ -15,7 +15,9 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <spring.version>5.3.20</spring.version>
+    <spring.version>5.3.23</spring.version>
+    <spring-data-jpa.version>2.7.5</spring-data-jpa.version>
+    <tomcat.version>9.0.68</tomcat.version>
 
     <!-- Logging -->
     <logback.version>1.4.4</logback.version>
@@ -28,6 +30,9 @@
     <hibernate.version>5.6.12.Final</hibernate.version>
     <hibernate-validator.version>6.2.5.Final</hibernate-validator.version>
     <javax-el.version>3.0.1-b12</javax-el.version>
+
+    <!--Cache-->
+    <ehcache.version>3.10.2</ehcache.version>
 
     <!--    Tests  -->
     <junit.version>4.13.2</junit.version>
@@ -88,9 +93,9 @@
       <version>${spring.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-orm</artifactId>
-      <version>${spring.version}</version>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-jpa</artifactId>
+      <version>${spring-data-jpa.version}</version>
     </dependency>
 
     <!--DataBase-->
@@ -98,6 +103,31 @@
       <groupId>org.hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
       <version>2.3.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>tomcat-jdbc</artifactId>
+      <version>${tomcat.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Cache -->
+    <dependency>
+      <groupId>javax.cache</groupId>
+      <artifactId>cache-api</artifactId>
+      <version>1.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ehcache</groupId>
+      <artifactId>ehcache</artifactId>
+      <scope>runtime</scope>
+      <version>${ehcache.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.glassfish.jaxb</groupId>
+          <artifactId>jaxb-runtime</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
 
@@ -112,6 +142,11 @@
       <artifactId>hibernate-validator</artifactId>
       <version>${hibernate-validator.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-jcache</artifactId>
+      <version>${hibernate.version}</version>
+    </dependency>
 
     <!--http://hibernate.org/validator/documentation/getting-started/#unified-expression-language-el-->
     <dependency>
@@ -123,16 +158,15 @@
 
     <!--Web-->
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>4.0.1</version>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>tomcat-servlet-api</artifactId>
+      <version>${tomcat.version}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>jstl</artifactId>
-      <version>1.2</version>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
     </dependency>
 
     <dependency>
@@ -162,9 +196,15 @@
     </dependency>
   </dependencies>
 
-  <profiles>
-  </profiles>
-
   <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-framework-bom</artifactId>
+        <version>${spring.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
   </dependencyManagement>
 </project>

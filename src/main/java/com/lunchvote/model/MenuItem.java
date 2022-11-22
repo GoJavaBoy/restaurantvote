@@ -6,16 +6,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "menu_item")
-@NamedQueries({
-        @NamedQuery(name = MenuItem.DELETE, query = "DELETE FROM MenuItem m WHERE m.id=:id"),
-        @NamedQuery(name = MenuItem.BY_RESTAURANT, query = "SELECT m FROM MenuItem m WHERE m.restaurant.id=:restaurantId ORDER BY m.created DESC"),
-        @NamedQuery(name = MenuItem.BY_RESTAURANT_AND_DATE, query = "SELECT m FROM MenuItem m WHERE m.restaurant.id=:restaurantId AND m.created=:created ORDER BY m.created DESC")
-})
 public class MenuItem extends AbstractNamedEntity {
-
-    public static final String DELETE = "MenuItem.delete";
-    public static final String BY_RESTAURANT = "MenuItem.getByRestaurant";
-    public static final String BY_RESTAURANT_AND_DATE = "MenuItem.getByRestaurantAndDate";
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
